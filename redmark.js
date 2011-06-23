@@ -2,26 +2,7 @@
 	Redmark: A rate limited queue 
 	Copyright Benji Schwartz-Gilbert
 	June 2011
-	
-	Sample job object structure:
-	
-	"4e1243bd22c66e76c2ba9eddc1f91394e57f9f83" : {
-		job : function() { work work },
-		jobData : [],
-		history : {
-			totalRuns : 0,
-			totalRuntime : 0,
-			avgRuntime : 0
-		},
-		credits : {
-			pool : 0,
-			cost : 0,
-			max : 1000,
-			min : 0
-		}
-	}
 */
-
 
 var crypto = require("crypto");
 
@@ -35,7 +16,7 @@ var 	creditsInterval = 50,
 		
 /****** Job Defaults Config *****/
 var	defaultTime = 1000, /* Time interval to be broken up (milliseconds) */
-		defaultTotal = 10, /* Number of jobs allowed to run within time interval */
+		defaultTotal = 1, /* Number of jobs allowed to run within time interval */
 		defaultMax = 1000,
 		defaultStart = 0; /* Maximum amount of time credits that can be built up in the pool (milliseconds) */
 
@@ -162,11 +143,10 @@ exports.waittime = function(id) {
 	return estimate;
 }
 
-/* Add a job to the queue with optional data to be applied when it's run and options to be setup/modified for all jobs of that type */
-exports.add = function(job, data, options) {
+/* Seed a job, calculating the hash and setting up the job options and storage */
+exports.seed = function(job, options) {
 	if(job != null) {
-		var id = ((typeof job === "string") ? job : (crypto.createHash("sha1")).update(job.toString()).digest("hex")),
-			  data = (data || []);
+		var id = (crypto.createHash("sha1")).update(job.toString()).digest("hex");
 		if((options != null) || (jobBank[id] == null)) {
 			var options = (options || {}),
 				job_time = (options.time || defaultTime),
@@ -176,7 +156,7 @@ exports.add = function(job, data, options) {
 				job_interval = job_time / job_number;
 			jobBank[id] = {
 				fn : job,
-				jobData : [data],
+				jobData : [],
 				history : {
 					totalRuns : 0,
 					totalRuntime : 0,
@@ -188,11 +168,26 @@ exports.add = function(job, data, options) {
 					max : job_pool_max
 				}
 			};
-		} else {
-			jobBank[id].jobData.push(data);
 		}
 		return id;
 	}
+};
+
+/* Add a job to the queue with optional data to be applied when it's run */
+exports.add = function(jobid, data) {
+	var result = false,
+			data = (data || []);
+	if(jobid != null) {
+		if(typeof jobid  === "function") {
+			jobid = exports.seed(jobid);
+		}
+		
+		if(jobBank[jobid] != null) {
+			jobBank[jobid].jobData.push(data);
+			result = true;
+		}
+	}
+	return result;
 };
 
 /* Query the historical stats of a single job if specified or all known jobs in the bank */

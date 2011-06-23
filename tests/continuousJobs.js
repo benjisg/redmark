@@ -1,13 +1,14 @@
 
 /* Continuous job insertion test */
 
-var queue = require("./redmark.js");
+var queue = require("../redmark.js");
 
-var id = queue.add(function() { 
+var id = queue.seed(function() { 
 	console.log("Boom da rando! [" + (+new Date()) + "]"); 
 	console.log(queue.stats());
-}, [], { time : 1000, total : 1, max : 2000});
+	console.log();
+}, { time : 1000, total : 1, max : 2000});
 
 setInterval(function() {
-	queue.add(id);
+	queue.add(id, []);
 }, (Math.random() * 51));
