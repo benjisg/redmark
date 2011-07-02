@@ -4,7 +4,7 @@
 var queue = require("../redmark.js");
 
 var id = queue.seed(function() { 
-	console.log("Boom da rando! [" + (+new Date()) + "]"); 
+	console.log("Running a job [" + (+new Date()) + "]"); 
 	console.log(queue.stats());
 	console.log();
 }, { time : 1000, total : 1, max : 2000});
