@@ -1,10 +1,11 @@
 {
     "name" : "redmark",
-    "version" : "0.1",
+    "version" : "1.0.0",
     "description" : "A per-job rate limited work queue",
+    "keywords" : ["queue", "rate limit", "jobs", "throttling"],
     "author": "Benji Schwartz-Gilbert <benji@blueklaxons.net>",
     "homepage": "http://github.com/redmark/redmark.git",
-    "main" : "./",
+    "main" : "lib/redmark.js",
     "repository" : {
         "type" : "git",
         "url" : "http://github.com/benjisg/redmark.git"
