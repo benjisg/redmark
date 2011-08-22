@@ -1,5 +1,12 @@
 Redmark is a javascript work queue with the ability to control how often a job is allowed to run. Jobs are completely independent of each other and can be scheduled at different rates. This allows you to queue up jobs to a service which enforces rate limiting (example: github API v2), running them within the limits of the service and in the order they were received.
 
+INSTALL
+---------
+```
+npm install redmark
+```
+
+
 FEATURES
 ---------
 
